@@ -49,7 +49,7 @@ Log.Debug("This is a debug message.");
 Log.Temp("Just log something temporary ...");
 ```
 
-that's it :o)
+that's it :-)
 
 Of course, you can use interpolated strings to log content of variables.
 ```csharp
