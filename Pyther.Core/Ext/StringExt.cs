@@ -65,7 +65,7 @@ public static class StringExt
     /// <param name="cultureInfo"></param>
     /// <param name="supressException"></param>
     /// <returns></returns>
-    public static T? Parse<T>(this string text, CultureInfo? cultureInfo = null, bool supressException = false) where T : struct
+    public static T? Parse<T>(this string text, CultureInfo? cultureInfo = null, bool supressException = true) where T : struct
     {
         T? result = null;
         try
@@ -195,10 +195,8 @@ public static class StringExt
 
     public static void SaveToFile(this string text, string path)
     {
-        using (StreamWriter writer = new(path))
-        {
-            writer.Write(text);
-        }
+        using StreamWriter writer = new(path);
+        writer.Write(text);
     }
 
     /// <summary>
