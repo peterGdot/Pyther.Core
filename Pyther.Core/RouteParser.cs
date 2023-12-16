@@ -1,4 +1,4 @@
-﻿using Pyther.Core.Ext;
+﻿using Pyther.Core.Extensions;
 using System.Globalization;
 
 namespace Pyther.Core

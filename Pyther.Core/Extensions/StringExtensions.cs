@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Pyther.Core.Ext;
+namespace Pyther.Core.Extensions;
 
-public static class StringExt
+public static class StringExtensions
 {
     #region Manipulation
 
@@ -36,11 +37,6 @@ public static class StringExt
 
     #region Transform/Encode/Decode
 
-    public static string ToCamelCase(this string text)
-    {
-        return System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(text);
-    }
-
     public static string Base64Encode(this string text, Encoding? encoding = null)
     {
         encoding ??= Encoding.UTF8;
@@ -52,6 +48,59 @@ public static class StringExt
         encoding ??= Encoding.UTF8;
         return encoding.GetString(Convert.FromBase64String(text));
     }
+
+    public static string LowerFirst(this string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        if (text.Length > 1)
+            return char.ToLower(text[0]) + text[1..];
+        else
+            return char.ToLower(text[0]).ToString();
+    }
+
+    public static string UpperFirst(this string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        if (text.Length > 1)
+            return char.ToUpper(text[0]) + text[1..];
+        else
+            return char.ToUpper(text[0]).ToString();
+    }
+    #endregion
+
+    #region Naming Policy
+
+    public static string SnakeToTitleCase(this string name) => string.Concat(name.Split('_').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase));
+    public static string SnakeToCamelCase(this string name) => string.Concat(name.Split('_').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)).LowerFirst();
+    public static string SnakeToKebabCase(this string name) => name.Replace('_', '-');
+
+    public static string TitleToSnakeCase(this string name)
+    {
+        string[] parts = string.Concat(
+            string.Join("_", name.Split(new char[] { },
+            StringSplitOptions.RemoveEmptyEntries))
+            .Select(c => char.IsLower(c) ? $"{c}" : $"_{c}".ToLower()))
+            .Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+        return string.Join("_", parts);
+    }
+    public static string TitleToKebabCase(this string name)
+    {
+        string[] parts = string.Concat(
+            string.Join("-", name.Split(new char[] { },
+            StringSplitOptions.RemoveEmptyEntries))
+            .Select(c => char.IsLower(c) ? $"{c}" : $"-{c}".ToLower()))
+            .Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+        return string.Join("-", parts);
+    }
+    public static string TitleToCamelCase(this string text) => System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(text);
+
+    public static string KebabToTitleCase(this string name) => string.Concat(name.Split('-').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase));
+    public static string KebabToCamelCase(this string name) => string.Concat(name.Split('-').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)).LowerFirst();
+    public static string KebabToSnakeCase(this string name) => name.Replace('-', '_');
+
+    public static string CamelToSnakeCase(this string name) => name.UpperFirst().TitleToSnakeCase();
+    public static string CamelToKebabCase(this string name) => name.UpperFirst().TitleToKebabCase();
+    public static string CamelToTitleCase(this string name) => name.UpperFirst();
 
     #endregion
 

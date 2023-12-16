@@ -101,5 +101,28 @@ FileMode? mode = "Append".ToEnum<FileMode>();  // result: FileMode.Append
 DateTime? dateTime = "04/02/1981 10:51:17".ToDateTime();  // result: DateTime object
 
 TimeSpan? timeSpan = "1:23:45".ToTimeSpan();  // result: TimeSpan object
- 
+```
+
+### Naming Policy Transformation
+There are a bunch of transformation methods that can help to the switch between several naming policies.
+```csharp
+// [snake_case -> ...]
+"my_class_name".SnakeToTitleCase());  // "MyClassName"
+"my_class_name".SnakeToCamelCase());  // "myClassName", 
+"my_class_name".SnakeToKebabCase());  // "my-class-name", 
+
+// [TitleCase/PascalCase -> ...]
+"MyClassName".TitleToSnakeCase());    // "my_class_name", 
+"MyClassName".TitleToKebabCase());    // "my-class-name", 
+"MyClassName".TitleToCamelCase());    // "myClassName", 
+
+// [kebabCase -> ...]
+"my-class-name".KebabToTitleCase());  // "MyClassName", 
+"my-class-name".KebabToSnakeCase());  //"my_class_name", 
+"my-class-name".KebabToCamelCase());  //"myClassName", 
+
+// [camelCase -> ...]
+"myClassName".CamelToSnakeCase());    // "my_class_name", 
+"myClassName".CamelToKebabCase());    //  "my-class-name", 
+"myClassName".CamelToTitleCase());    // "MyClassName", 
 ```

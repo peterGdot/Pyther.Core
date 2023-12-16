@@ -1,6 +1,6 @@
-﻿namespace Pyther.Core.Ext
+﻿namespace Pyther.Core.Extensions
 {
-    public static class DateTimeExt
+    public static class DateTimeExtensions
     {
         static readonly DateTime unixEpoch = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 

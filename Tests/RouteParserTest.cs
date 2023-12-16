@@ -1,33 +1,32 @@
 using Pyther.Core;
 
-namespace Tests
+namespace Tests;
+
+[TestClass]
+public class RouteParserTest
 {
-    [TestClass]
-    public class RouteParserTest
+    [TestMethod]
+    public void TestRoutes()
     {
-        [TestMethod]
-        public void TestRoutes()
-        {
-            RouteParser parser = new();
+        RouteParser parser = new();
 
-            // shoul all be true
-            Assert.AreEqual(parser.Is("orders", "orders"), true);
+        // shoul all be true
+        Assert.AreEqual(true, parser.Is("orders", "orders"));
 
-            Assert.AreEqual(parser.Is("orders/{id}", "orders/123"), true);
-            Assert.AreEqual(parser["id"], "123");
+        Assert.AreEqual(true, parser.Is("orders/{id}", "orders/123"));
+        Assert.AreEqual("123", parser["id"]);
 
-            Assert.AreEqual(parser.Is("orders/{id}/test/{a}-{b}", "orders/123/test/hello-world"), true);
-            Assert.AreEqual(parser["id"], "123");
-            Assert.AreEqual(parser.Get<int>("id"), 123);
-            Assert.AreEqual(parser["a"], "hello");
-            Assert.AreEqual(parser["b"], "world");
+        Assert.AreEqual(true, parser.Is("orders/{id}/test/{a}-{b}", "orders/123/test/hello-world"));
+        Assert.AreEqual("123", parser["id"]);
+        Assert.AreEqual(123, parser.Get<int>("id"));
+        Assert.AreEqual("hello", parser["a"]);
+        Assert.AreEqual("world", parser["b"]);
 
-            // should all be false
-            Assert.AreEqual(parser.Is("orders", "order"), false);
-            Assert.AreEqual(parser.Is("orders/{id}", "orders/123/test"), false);
-            Assert.AreEqual(parser["id"], null);
-            Assert.AreEqual(parser.Is("orders/{id}", ""), false);
-            Assert.AreEqual(parser.Is("orders/{id}", "products"), false);
-        }
+        // should all be false
+        Assert.AreEqual(false, parser.Is("orders", "order"));
+        Assert.AreEqual(false, parser.Is("orders/{id}", "orders/123/test"));
+        Assert.AreEqual(null, parser["id"]);
+        Assert.AreEqual(false, parser.Is("orders/{id}", ""));
+        Assert.AreEqual(false, parser.Is("orders/{id}", "products"));
     }
 }
