@@ -1,11 +1,11 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Pyther.Core.Ext
+namespace Pyther.Core.Extensions
 {
     /// <summary>
     /// Collections extensions methods
     /// </summary>
-    public static class CollectionExt
+    public static class CollectionExtensions
     {
         /// <summary>
         /// Resize a List and fill it with default values.
