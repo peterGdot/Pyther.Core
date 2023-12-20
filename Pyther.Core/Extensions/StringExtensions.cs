@@ -1,16 +1,27 @@
 ﻿using System.ComponentModel;
+using System.Dynamic;
 using System.Globalization;
-using System.Runtime.CompilerServices;
+using System.Net;
+using System.Runtime.Versioning;
+using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Pyther.Core.Extensions;
 
 public static class StringExtensions
 {
+    private static readonly Regex rexEmail = new(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
+    private static readonly Regex rexRemoveTags = new(@"(?></?\w+)(?>(?:[^>'""]+|'[^']*'|""[^""]*"")*)>");
+    private static readonly Regex rexRemoveHtmlComments = new("<!--.*?-->", RegexOptions.Singleline);
+
     #region Manipulation
 
-    public static string Repeat(this string text, uint n)
+    public static string? Repeat(this string? text, uint n)
     {
+        if (text == null) return null;
         var spanSrc = text.AsSpan();
         int length = spanSrc.Length;
         var spanDst = new Span<char>(new char[length * (int)n]);
@@ -21,16 +32,46 @@ public static class StringExtensions
         return spanDst.ToString();
     }
 
-    public static string Reverse(this string text)
+    public static string? Reverse(this string? text)
     {
+        if (text == null) return null;
         char[] c = text.ToCharArray();
         Array.Reverse(c);
         return new string(c);
     }
 
-    public static string Clip(this string text, int length)
+    public static string? Clip(this string? text, int length)
     {
+        if (text == null) return null;
         return text[..Math.Min(text.Length, length)];
+    }
+
+    /// <summary>
+    /// Remmove html/xml tags from the given string.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="decode"></param>
+    /// <returns></returns>
+    public static string? RemoveTags(this string? text, bool decode = false)
+    {
+        if (text == null)
+        {
+            return null;
+        }
+
+        string? result = rexRemoveTags.Replace(text, string.Empty);
+
+        return decode ? WebUtility.HtmlDecode(result) : result;
+    }
+
+    /// <summary>
+    /// Remove Html comments from the given string.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static string? RemoveHtmlComments(this string? text)
+    {
+        return text != null ? rexRemoveHtmlComments.Replace(text, string.Empty) : null;
     }
 
     #endregion
@@ -49,8 +90,9 @@ public static class StringExtensions
         return encoding.GetString(Convert.FromBase64String(text));
     }
 
-    public static string LowerFirst(this string text)
+    public static string? LowerFirst(this string? text)
     {
+        if (text == null) return null;
         if (string.IsNullOrEmpty(text)) return text;
         if (text.Length > 1)
             return char.ToLower(text[0]) + text[1..];
@@ -58,24 +100,27 @@ public static class StringExtensions
             return char.ToLower(text[0]).ToString();
     }
 
-    public static string UpperFirst(this string text)
+    public static string? UpperFirst(this string? text)
     {
+        if (text == null) return null;
         if (string.IsNullOrEmpty(text)) return text;
         if (text.Length > 1)
             return char.ToUpper(text[0]) + text[1..];
         else
             return char.ToUpper(text[0]).ToString();
     }
+
     #endregion
 
     #region Naming Policy
 
-    public static string SnakeToTitleCase(this string name) => string.Concat(name.Split('_').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase));
-    public static string SnakeToCamelCase(this string name) => string.Concat(name.Split('_').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)).LowerFirst();
-    public static string SnakeToKebabCase(this string name) => name.Replace('_', '-');
+    public static string? SnakeToTitleCase(this string? name) => name != null ? string.Concat(name.Split('_').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)) : null;
+    public static string? SnakeToCamelCase(this string? name) => name != null ? string.Concat(name.Split('_').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)).LowerFirst() : null;
+    public static string? SnakeToKebabCase(this string? name) => name != null ? name.Replace('_', '-') : null;
 
-    public static string TitleToSnakeCase(this string name)
+    public static string? TitleToSnakeCase(this string? name)
     {
+        if (name == null) return null;
         string[] parts = string.Concat(
             string.Join("_", name.Split(new char[] { },
             StringSplitOptions.RemoveEmptyEntries))
@@ -83,8 +128,9 @@ public static class StringExtensions
             .Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
         return string.Join("_", parts);
     }
-    public static string TitleToKebabCase(this string name)
+    public static string? TitleToKebabCase(this string? name)
     {
+        if (name == null) return null;
         string[] parts = string.Concat(
             string.Join("-", name.Split(new char[] { },
             StringSplitOptions.RemoveEmptyEntries))
@@ -92,15 +138,15 @@ public static class StringExtensions
             .Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
         return string.Join("-", parts);
     }
-    public static string TitleToCamelCase(this string text) => System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(text);
+    public static string? TitleToCamelCase(this string? name) => name != null ? System.Text.Json.JsonNamingPolicy.CamelCase.ConvertName(name) : null;
 
-    public static string KebabToTitleCase(this string name) => string.Concat(name.Split('-').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase));
-    public static string KebabToCamelCase(this string name) => string.Concat(name.Split('-').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)).LowerFirst();
-    public static string KebabToSnakeCase(this string name) => name.Replace('-', '_');
+    public static string? KebabToTitleCase(this string? name) => name != null ? string.Concat(name.Split('-').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)) : null;
+    public static string? KebabToCamelCase(this string? name) => name != null ? string.Concat(name.Split('-').Select(CultureInfo.InvariantCulture.TextInfo.ToTitleCase)).LowerFirst() : null;
+    public static string? KebabToSnakeCase(this string? name) => name?.Replace('-', '_');
 
-    public static string CamelToSnakeCase(this string name) => name.UpperFirst().TitleToSnakeCase();
-    public static string CamelToKebabCase(this string name) => name.UpperFirst().TitleToKebabCase();
-    public static string CamelToTitleCase(this string name) => name.UpperFirst();
+    public static string? CamelToSnakeCase(this string? name) => name?.UpperFirst().TitleToSnakeCase();
+    public static string? CamelToKebabCase(this string? name) => name?.UpperFirst().TitleToKebabCase();
+    public static string? CamelToTitleCase(this string? name) => name?.UpperFirst();
 
     #endregion
 
@@ -160,14 +206,19 @@ public static class StringExtensions
 
     #region Checks
 
+    public static bool IsEmpty(this string? text)
+    {
+        return string.IsNullOrWhiteSpace(text);
+    }
+
     /// <summary>
     /// Check if the string is an integer.
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public static bool IsInteger(this string text)
+    public static bool IsInteger(this string? text)
     {
-        return long.TryParse(text, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out _);
+        return text != null && long.TryParse(text, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out _);
     }
 
     /// <summary>
@@ -175,28 +226,49 @@ public static class StringExtensions
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public static bool IsEmail(this string text)
+    public static bool IsEmail(this string? text)
     {
-        var email = text.Trim();
-        try
-        {
-            var addr = new System.Net.Mail.MailAddress(email);
-            return !email.EndsWith(".") && addr.Address == email;
-        }
-        catch
-        {
-            return false;
-        }
+        if (text == null) return false;
+        return rexEmail.Match(text.Trim()).Success && !text.EndsWith('.');
     }
 
-    public static bool Contains(this string str, string needle, StringComparison comparer = StringComparison.Ordinal)
+    public static bool Contains(this string? text, string? needle, StringComparison comparer = StringComparison.Ordinal)
     {
-        return str?.IndexOf(needle, comparer) >= 0;
+        if (text == null || needle == null) return false;
+        return text?.IndexOf(needle, comparer) >= 0;
     }
 
-    public static bool ContainsIgnoreCase(this string str, string needle)
+    public static bool ContainsIgnoreCase(this string? text, string? needle)
     {
-        return str?.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0;
+        if (text == null || needle == null) return false;
+        return text?.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    #endregion
+
+    #region En/De-cryption
+
+    [SupportedOSPlatform("windows")]
+    public static string? EncryptRSA(this string? text, string key)
+    {
+        if (text == null) return null;
+        var parameter = new CspParameters { KeyContainerName = key };
+        var provider = new RSACryptoServiceProvider(parameter) { PersistKeyInCsp = true };
+        byte[] bytes = provider.Encrypt(Encoding.UTF8.GetBytes(text), true);
+        return BitConverter.ToString(bytes);
+    }
+
+    [SupportedOSPlatform("windows")]
+    public static string? DecryptRSA(this string text, string key)
+    {
+        if (text == null) return null;
+        var parameter = new CspParameters { KeyContainerName = key };
+        var provider = new RSACryptoServiceProvider(parameter) { PersistKeyInCsp = true };
+        string[] decryptArray = text.Split(new[] { "-" }, StringSplitOptions.None);
+        byte[] decryptByteArray = Array.ConvertAll(decryptArray, (s => Convert.ToByte(byte.Parse(s, NumberStyles.HexNumber))));
+        byte[] bytes = provider.Decrypt(decryptByteArray, true);
+        string result = Encoding.UTF8.GetString(bytes);
+        return result;
     }
 
     #endregion
@@ -253,14 +325,65 @@ public static class StringExtensions
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public static int CountWords(this string text)
+    public static int CountWords(this string? text)
     {
-        return text.Split(new char[] { ' ', '\r', '\n', '.', '?', '!' }, StringSplitOptions.RemoveEmptyEntries).Length;
+        return text != null ? text.Split(new char[] { ' ', '\r', '\n', '.', '?', '!' }, StringSplitOptions.RemoveEmptyEntries).Length : 0;
     }
 
-    public static void Throw(this string text)
+    public static void Throw(this string? text)
     {
         throw new Exception(text);
     }
 
+    public static IEnumerable<T>? SplitToType<T>(this string? text, char separator, StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries) where T : IConvertible
+    {
+        if (text == null) return null;
+        return text?.Split(separator, splitOptions).Select(s => (T)Convert.ChangeType(s, typeof(T)));
+    }
+
+    public static IEnumerable<T>? SplitToType<T>(this string? text, string separator, StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries) where T : IConvertible
+    {
+        if (text == null) return null;
+        return text?.Split(separator, splitOptions).Select(s => (T)Convert.ChangeType(s, typeof(T)));
+    }
+
+    public static IEnumerable<T>? SplitToType<T>(this string? text, StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries, params char[] separators) where T : IConvertible
+    {
+        if (text == null) return null;
+        return text?.Split(separators, splitOptions).Select(s => (T)Convert.ChangeType(s, typeof(T)));
+    }
+
+    public static dynamic? ParseJson(this string? text, JsonSerializerOptions? options = null, bool suppressExceptions = false)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        try
+        {
+            return JsonSerializer.Deserialize<ExpandoObject>(text, options);
+        }
+        catch (Exception)
+        {
+            if (suppressExceptions)
+            {
+                return null;
+            }
+            throw;
+        }
+    }
+
+    public static T? ParseJson<T>(this string? text, JsonSerializerOptions? options = null, bool suppressExceptions = false) where T : class
+    {
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        try
+        {
+            return JsonSerializer.Deserialize<T>(text, options);
+        }
+        catch (Exception)
+        {
+            if (suppressExceptions)
+            {
+                return null;
+            }
+            throw;
+        }
+    }
 }
