@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 /Pyther.Core/Upload NuGet.bat
 /Upload NuGet.bat
+/demos/LogTest/LogTest.csproj
+/demos/LogTest/LogTest.csproj
+/demos/LogTest/Program.cs
