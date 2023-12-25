@@ -58,8 +58,9 @@ namespace Pyther.Core.Logging
             }
         }
 
-        public static void WriteLine(LogLevel type, string data)
+        public static void WriteLine(LogLevel type, string? data)
         {
+            data ??= "<NULL>";
             DateTime now = DateTime.Now;
             foreach (ILogger logger in Instance.logger)
             {
@@ -73,7 +74,7 @@ namespace Pyther.Core.Logging
                     if (logger.UseLogtype)
                     {
                         sb.Append(type.ToString().PadRight(7)).Append(" | ");
-                    }
+                    }                    
                     sb.Append(data).Append(Environment.NewLine);
                     logger.Log(type, sb.ToString());
                 }
@@ -103,19 +104,19 @@ namespace Pyther.Core.Logging
             }
         }
 
-        public static void Temp(string str) => WriteLine(LogLevel.Temp, str);
-        public static void Debug(string str) => WriteLine(LogLevel.Debug, str);
-        public static void Process(string str) => WriteLine(LogLevel.Process, str);
-        public static void Info(string str) => WriteLine(LogLevel.Info, str);
-        public static void Warning(string str) => WriteLine(LogLevel.Warning, str);
-        public static void Error(string str) => WriteLine(LogLevel.Error, str);
+        public static void Temp(string? str) => WriteLine(LogLevel.Temp, str);
+        public static void Debug(string? str) => WriteLine(LogLevel.Debug, str);
+        public static void Process(string? str) => WriteLine(LogLevel.Process, str);
+        public static void Info(string? str) => WriteLine(LogLevel.Info, str);
+        public static void Warning(string? str) => WriteLine(LogLevel.Warning, str);
+        public static void Error(string? str) => WriteLine(LogLevel.Error, str);
 
-        public static void Temp(object obj) => WriteLine(LogLevel.Temp, obj?.ToString() ?? "<NULL>");
-        public static void Debug(object obj) => WriteLine(LogLevel.Debug, obj?.ToString() ?? "<NULL>");
-        public static void Process(object obj) => WriteLine(LogLevel.Process, obj?.ToString() ?? "<NULL>");
-        public static void Info(object obj) => WriteLine(LogLevel.Info, obj?.ToString() ?? "<NULL>");
-        public static void Warnings(object obj) => WriteLine(LogLevel.Warning, obj?.ToString() ?? "<NULL>");
-        public static void Error(object obj) => WriteLine(LogLevel.Error, obj?.ToString() ?? "<NULL>");
+        public static void Temp(object? obj) => WriteLine(LogLevel.Temp, obj?.ToString() ?? "<NULL>");
+        public static void Debug(object? obj) => WriteLine(LogLevel.Debug, obj?.ToString() ?? "<NULL>");
+        public static void Process(object? obj) => WriteLine(LogLevel.Process, obj?.ToString() ?? "<NULL>");
+        public static void Info(object? obj) => WriteLine(LogLevel.Info, obj?.ToString() ?? "<NULL>");
+        public static void Warnings(object? obj) => WriteLine(LogLevel.Warning, obj?.ToString() ?? "<NULL>");
+        public static void Error(object? obj) => WriteLine(LogLevel.Error, obj?.ToString() ?? "<NULL>");
 
         public static void FTemp(string format, params object[] args) => WriteFormatLine(LogLevel.Temp, format, args);
         public static void FDebug(string format, params object[] args) => WriteFormatLine(LogLevel.Debug, format, args);
@@ -123,5 +124,26 @@ namespace Pyther.Core.Logging
         public static void FInfo(string format, params object[] args) => WriteFormatLine(LogLevel.Info, format, args);
         public static void FWarning(string format, params object[] args) => WriteFormatLine(LogLevel.Warning, format, args);
         public static void FError(string format, params object[] args) => WriteFormatLine(LogLevel.Error, format, args);
+
+        public static void Exception(Exception? ex, LogLevel level = LogLevel.Error)
+        {
+            if (ex == null) return;
+            StringBuilder sb = new StringBuilder(9);
+            sb.Append($"'{ex.GetType().Name}' Exception:").Append(Environment.NewLine);
+            sb.Append($"Message:{Environment.NewLine}   '{ex.Message}'").Append(Environment.NewLine);
+            sb.Append($"Type:{Environment.NewLine}   '{ex.GetType().FullName}'").Append(Environment.NewLine);            
+            sb.Append($"StackTrace:{Environment.NewLine}{ex.StackTrace}").Append(Environment.NewLine);
+            if ((ex.InnerException != null))
+            {
+                sb.Append($"{Environment.NewLine}Inner Exeption:{Environment.NewLine}");
+            }
+            WriteLine(level, sb.ToString());
+
+            while ((ex = ex.InnerException) != null)
+            {                
+                Log.Exception(ex);
+            }
+            
+        }
     }
 }

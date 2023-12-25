@@ -150,7 +150,7 @@ public static class StringExtensions
 
     #endregion
 
-    #region Conversation
+    #region Conversion
 
     /// <summary>
     /// Generic text converter.
@@ -160,8 +160,9 @@ public static class StringExtensions
     /// <param name="cultureInfo"></param>
     /// <param name="supressException"></param>
     /// <returns></returns>
-    public static T? Parse<T>(this string text, CultureInfo? cultureInfo = null, bool supressException = true) where T : struct
+    public static T? Parse<T>(this string? text, CultureInfo? cultureInfo = null, bool supressException = true) where T : struct
     {
+        if (text == null) return null;
         T? result = null;
         try
         {
@@ -385,5 +386,10 @@ public static class StringExtensions
             }
             throw;
         }
+    }
+
+    public static string? RemoveWhiteSpaceLines(this string? text)
+    {
+        return text != null ? Regex.Replace(text, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline) : null;
     }
 }
