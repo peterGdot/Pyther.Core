@@ -118,6 +118,13 @@ namespace Pyther.Core.Logging
         public static void Warnings(object? obj) => WriteLine(LogLevel.Warning, obj?.ToString() ?? "<NULL>");
         public static void Error(object? obj) => WriteLine(LogLevel.Error, obj?.ToString() ?? "<NULL>");
 
+        public static void Temp(Exception? ex) => Exception(ex, LogLevel.Temp);
+        public static void Debug(Exception? ex) => Exception(ex, LogLevel.Debug);
+        public static void Process(Exception? ex) => Exception(ex, LogLevel.Process);
+        public static void Info(Exception? ex) => Exception(ex, LogLevel.Info);
+        public static void Warnings(Exception? ex) => Exception(ex, LogLevel.Warning);
+        public static void Error(Exception? ex) => Exception(ex, LogLevel.Error);
+
         public static void FTemp(string format, params object[] args) => WriteFormatLine(LogLevel.Temp, format, args);
         public static void FDebug(string format, params object[] args) => WriteFormatLine(LogLevel.Debug, format, args);
         public static void FProcess(string format, params object[] args) => WriteFormatLine(LogLevel.Process, format, args);
@@ -125,7 +132,7 @@ namespace Pyther.Core.Logging
         public static void FWarning(string format, params object[] args) => WriteFormatLine(LogLevel.Warning, format, args);
         public static void FError(string format, params object[] args) => WriteFormatLine(LogLevel.Error, format, args);
 
-        public static void Exception(Exception? ex, LogLevel level = LogLevel.Error)
+        private static void Exception(Exception? ex, LogLevel level = LogLevel.Error)
         {
             if (ex == null) return;
             StringBuilder sb = new StringBuilder(9);
@@ -141,7 +148,7 @@ namespace Pyther.Core.Logging
 
             while ((ex = ex.InnerException) != null)
             {                
-                Log.Exception(ex);
+                Log.Exception(ex, level);
             }
             
         }

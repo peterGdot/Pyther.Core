@@ -14,7 +14,9 @@ namespace Pyther.Core.Extensions
         /// <param name="list"></param>
         /// <param name="newSize"></param>
         /// <param name="element"></param>
+#pragma warning disable CS8601
         public static void Resize<T>(this List<T> list, int newSize, T element = default)
+#pragma warning restore CS8601
         {
             int oldCount = list.Count;
 

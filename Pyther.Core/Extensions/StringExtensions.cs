@@ -19,6 +19,17 @@ public static class StringExtensions
 
     #region Manipulation
 
+    /// <summary>
+    /// Fallback a string to a given value (default null), if it is null or whitespace.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <param name="fallack"></param>
+    /// <returns></returns>
+    public static string? Fallback(this string input, string? fallack)
+    {
+        return !string.IsNullOrWhiteSpace(input) ? input : fallack;
+    }
+
     public static string? Repeat(this string? text, uint n)
     {
         if (text == null) return null;
