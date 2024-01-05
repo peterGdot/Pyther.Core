@@ -7,7 +7,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Pyther.Core.Extensions;
 
@@ -402,5 +401,21 @@ public static class StringExtensions
     public static string? RemoveWhiteSpaceLines(this string? text)
     {
         return text != null ? Regex.Replace(text, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline) : null;
+    }
+
+    /// <summary>
+    /// Convert this string into a Stream object.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static Stream? ToStream(this string? text)
+    {
+        if (text == null) return null;
+        var stream = new MemoryStream();
+        var writer = new StreamWriter(stream);
+        writer.Write(text);
+        writer.Flush();
+        stream.Position = 0;
+        return stream;
     }
 }

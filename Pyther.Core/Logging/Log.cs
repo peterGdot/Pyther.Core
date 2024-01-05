@@ -5,7 +5,6 @@ namespace Pyther.Core.Logging
     public static class Log
     {
         private static LogDataInstance? instance = null;
-        private static readonly StringBuilder sb = new(5);
 
         public static LogDataInstance Instance {
             get
@@ -66,6 +65,7 @@ namespace Pyther.Core.Logging
             {
                 if (logger.IsEnabled && (type >= logger.MinLevel || type == LogLevel.Temp))
                 {
+                    StringBuilder sb = new(5);
                     sb.Clear();
                     if (logger.UseTimestamp)
                     {
@@ -89,6 +89,7 @@ namespace Pyther.Core.Logging
             {
                 if (logger.IsEnabled && (type >= logger.MinLevel || type == LogLevel.Temp))
                 {
+                    StringBuilder sb = new(5);
                     sb.Clear();
                     if (logger.UseTimestamp)
                     {
@@ -135,7 +136,7 @@ namespace Pyther.Core.Logging
         private static void Exception(Exception? ex, LogLevel level = LogLevel.Error)
         {
             if (ex == null) return;
-            StringBuilder sb = new StringBuilder(9);
+            StringBuilder sb = new(9);
             sb.Append($"'{ex.GetType().Name}' Exception:").Append(Environment.NewLine);
             sb.Append($"Message:{Environment.NewLine}   '{ex.Message}'").Append(Environment.NewLine);
             sb.Append($"Type:{Environment.NewLine}   '{ex.GetType().FullName}'").Append(Environment.NewLine);            
