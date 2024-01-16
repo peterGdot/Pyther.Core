@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace Pyther.Core.Logging
 {
@@ -105,35 +106,59 @@ namespace Pyther.Core.Logging
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Temp(string? str) => WriteLine(LogLevel.Temp, str);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Debug(string? str) => WriteLine(LogLevel.Debug, str);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Process(string? str) => WriteLine(LogLevel.Process, str);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Info(string? str) => WriteLine(LogLevel.Info, str);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Warning(string? str) => WriteLine(LogLevel.Warning, str);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Error(string? str) => WriteLine(LogLevel.Error, str);
 
-        public static void Temp(object? obj) => WriteLine(LogLevel.Temp, obj?.ToString() ?? "<NULL>");
-        public static void Debug(object? obj) => WriteLine(LogLevel.Debug, obj?.ToString() ?? "<NULL>");
-        public static void Process(object? obj) => WriteLine(LogLevel.Process, obj?.ToString() ?? "<NULL>");
-        public static void Info(object? obj) => WriteLine(LogLevel.Info, obj?.ToString() ?? "<NULL>");
-        public static void Warnings(object? obj) => WriteLine(LogLevel.Warning, obj?.ToString() ?? "<NULL>");
-        public static void Error(object? obj) => WriteLine(LogLevel.Error, obj?.ToString() ?? "<NULL>");
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Temp(object? obj) => WriteLine(LogLevel.Temp, obj?.ToString());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Debug(object? obj) => WriteLine(LogLevel.Debug, obj?.ToString());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Process(object? obj) => WriteLine(LogLevel.Process, obj?.ToString());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Info(object? obj) => WriteLine(LogLevel.Info, obj?.ToString());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Warning(object? obj) => WriteLine(LogLevel.Warning, obj?.ToString());
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Error(object? obj) => WriteLine(LogLevel.Error, obj?.ToString());
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Temp(Exception? ex) => Exception(ex, LogLevel.Temp);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Debug(Exception? ex) => Exception(ex, LogLevel.Debug);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Process(Exception? ex) => Exception(ex, LogLevel.Process);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Info(Exception? ex) => Exception(ex, LogLevel.Info);
-        public static void Warnings(Exception? ex) => Exception(ex, LogLevel.Warning);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Warning(Exception? ex) => Exception(ex, LogLevel.Warning);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Error(Exception? ex) => Exception(ex, LogLevel.Error);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FTemp(string format, params object[] args) => WriteFormatLine(LogLevel.Temp, format, args);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FDebug(string format, params object[] args) => WriteFormatLine(LogLevel.Debug, format, args);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FProcess(string format, params object[] args) => WriteFormatLine(LogLevel.Process, format, args);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FInfo(string format, params object[] args) => WriteFormatLine(LogLevel.Info, format, args);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FWarning(string format, params object[] args) => WriteFormatLine(LogLevel.Warning, format, args);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FError(string format, params object[] args) => WriteFormatLine(LogLevel.Error, format, args);
 
-        private static void Exception(Exception? ex, LogLevel level = LogLevel.Error)
+        public static void Exception(Exception? ex, LogLevel level = LogLevel.Error)
         {
             if (ex == null) return;
             StringBuilder sb = new(9);

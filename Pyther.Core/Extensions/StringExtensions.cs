@@ -418,4 +418,19 @@ public static class StringExtensions
         stream.Position = 0;
         return stream;
     }
+
+    /// <summary>
+    /// Split a string by a given separator to a key and a value string.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="separator"></param>
+    /// <returns></returns>
+    public static (string? key, string? value) SplitKeyValue(this string text, string separator = "=")
+    {
+        if (string.IsNullOrWhiteSpace(text)) return (null, null);
+        var parts = text.Split(separator, 2);
+        string? key = parts[0];
+        string? value = parts.Length == 2 ? parts[1] : null;
+        return (key, value);
+    }
 }

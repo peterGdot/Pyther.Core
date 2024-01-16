@@ -64,15 +64,6 @@ namespace Pyther.Core.Extensions
             }
         }
 
-        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
-        {
-            if (enumerable == null) return;
-            foreach (var e in enumerable)
-            {
-                action(e);
-            }
-        }
-
         public static T? FindFirst<T>(this System.Collections.IList source, Func<T, bool> predicate)
         {
             foreach (T item in source)
