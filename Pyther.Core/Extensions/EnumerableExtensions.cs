@@ -57,5 +57,5 @@ public static class EnumerableExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="enumerable"></param>
     /// <returns></returns>
-    public static bool IsEmpty<T>(this IEnumerable<T>? enumerable) => enumerable == null || !enumerable.Any();
+    public static bool IsNullorEmpty<T>(this IEnumerable<T>? enumerable) => enumerable == null || !enumerable.Any();
 }

@@ -15,6 +15,26 @@ public static class StringExtensions
     private static readonly Regex rexEmail = new(@"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z", RegexOptions.IgnoreCase);
     private static readonly Regex rexRemoveTags = new(@"(?></?\w+)(?>(?:[^>'""]+|'[^']*'|""[^""]*"")*)>");
     private static readonly Regex rexRemoveHtmlComments = new("<!--.*?-->", RegexOptions.Singleline);
+    private static readonly Regex rexSqlLike = new(@"\.|\$|\^|\{|\[|\(|\||\)|\*|\+|\?|\\");
+
+    /// <summary>
+    /// List of datetime placeholders
+    /// </summary>
+    private static readonly List<string> dtFormat = new()
+    {
+        " d", "dd", "ddd", "dddd",
+        " f", "ff", "fff", "ffff", "fffff", "ffffff", "fffffff",
+        " F", "FF", "FFF", "FFFF", "FFFFF", "FFFFFF", "FFFFFFF",
+        " h", "hh",
+        " H", "HH",
+        " K",
+        " m", "mm",
+        " M", "MM", "MMM", "MMMM",
+        " s", "ss",
+        " t", "tt",
+        " y", "yy", "yyy", "yyyy",
+        " z", "zz", "zzz"
+    };
 
     #region Manipulation
 
@@ -82,6 +102,32 @@ public static class StringExtensions
     public static string? RemoveHtmlComments(this string? text)
     {
         return text != null ? rexRemoveHtmlComments.Replace(text, string.Empty) : null;
+    }
+
+    /// <summary>
+    /// Replace date and time placeholders.
+    /// For a list of DateTime placeholders see https://learn.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+    /// Example: "Customers_{yyyy}-{MM}-{dd}_{HH}-{mm}-{ss}.csv" => "Customers_2023-11-19_11-46-00.csv"
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="dateTime"></param>
+    /// <param name="ci">leave null for InvariantCulture</param>
+    /// <returns></returns>
+    public static string? ReplaceDateTimePlaceholder(this string? str, DateTime dateTime, CultureInfo? ci = null)
+    {
+        if (str == null)
+        {
+            return null;
+        }
+        string result = str;
+        if (result != null)
+        {
+            foreach (var ph in dtFormat)
+            {
+                result = result.Replace("{" + ph.TrimStart() + "}", dateTime.ToString(ph, ci ?? CultureInfo.InvariantCulture).Trim());
+            }
+        }
+        return result;
     }
 
     #endregion
@@ -157,6 +203,8 @@ public static class StringExtensions
     public static string? CamelToSnakeCase(this string? name) => name?.UpperFirst().TitleToSnakeCase();
     public static string? CamelToKebabCase(this string? name) => name?.UpperFirst().TitleToKebabCase();
     public static string? CamelToTitleCase(this string? name) => name?.UpperFirst();
+
+    public static string ToUpperSentenceCase(this string str) => Regex.Replace(str, "[a-z][A-Z]", match => $"{match.Value[0]} {char.ToUpper(match.Value[1])}");
 
     #endregion
 
@@ -325,6 +373,82 @@ public static class StringExtensions
         return null;
     }
 
+    /// <summary>
+    /// Return a substring until the first occurence of a given search string was found.
+    /// If the search string is not an element of the source string, the source string itself is returned.
+    /// </summary>
+    /// <param name="text">The text to test against.</param>
+    /// <param name="stop">The string to search for.</param>
+    /// <param name="comparison">An optional string comparison rule.</param>
+    /// <returns>Returns the string until the first occurence of the search string (not included).</returns>
+    public static string? Until(this string? text, string stop, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return text;
+        int index = text.IndexOf(stop, comparison);
+
+        return index > 0 ? text[..index] : text;
+    }
+
+    /// <summary>
+    /// Return a substring until the first occurence of a given seearch character was found.
+    /// If the search character is not an element of the source string, the source string itself is returned.
+    /// </summary>
+    /// <param name="text">The text to test against.</param>
+    /// <param name="stop">The character to search for.</param>
+    /// <param name="comparison">An optional string comparison rule.</param>
+    /// <returns>Returns the string until the first occurence of the search character (not included).</returns>
+    public static string? Until(this string? text, char stop, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return text;
+        int index = text.IndexOf(stop, comparison);
+
+        return index > 0 ? text[..index] : text;
+    }
+
+    /// <summary>
+    /// Return a substring after the first occurence of a given search string.
+    /// If the search string is not an element of the source string, the source string itself is returned.
+    /// </summary>
+    /// <param name="text">The text to test against.</param>
+    /// <param name="stop">The string to search for.</param>
+    /// <param name="comparison">An optional string comparison rule.</param>
+    /// <returns>Returns the string after the first occurence of the search string (not included).</returns>
+    public static string? After(this string? text, string stop, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return text;
+        int index = text.IndexOf(stop, comparison);
+
+        return index > 0 ? text.Substring(index + stop.Length) : text;
+    }
+
+    /// <summary>
+    /// Return a substring after the first occurence of a given search character.
+    /// If the search character is not an element of the source string, the source string itself is returned.
+    /// </summary>
+    /// <param name="text">The text to test against.</param>
+    /// <param name="stop">The character to search for.</param>
+    /// <param name="comparison">An optional string comparison rule.</param>
+    /// <returns>Returns the string after the first occurence of the search character (not included).</returns>
+    public static string? After(this string? text, char stop, StringComparison comparison = StringComparison.Ordinal)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return text;
+        int index = text.IndexOf(stop, comparison);
+
+        return index > 0 ? text.Substring(index + 1) : text;
+    }
+
+    /// <summary>
+    /// A simple SQL Like operator.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="pattern"></param>
+    /// <returns></returns>
+    public static bool SqlLike(this string? text, string pattern)
+    {
+        if (text == null || string.IsNullOrWhiteSpace(pattern)) return false;
+        return new Regex(@"\A" + rexSqlLike.Replace(pattern, ch => @"\" + ch).Replace("%", ".*").Replace('_', '.') + @"\z", RegexOptions.Singleline).IsMatch(text);
+    }
+
     public static void SaveToFile(this string text, string path)
     {
         using StreamWriter writer = new(path);
@@ -401,6 +525,17 @@ public static class StringExtensions
     public static string? RemoveWhiteSpaceLines(this string? text)
     {
         return text != null ? Regex.Replace(text, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline) : null;
+    }
+
+    /// <summary>
+    /// Add a string after an empty line to the source string. If the source string was null, the new line will be returned.
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="line"></param>
+    /// <returns></returns>
+    public static string AddLine(this string? text, string line)
+    {
+        return string.IsNullOrWhiteSpace(text) ? line : text + Environment.NewLine + line;
     }
 
     /// <summary>
