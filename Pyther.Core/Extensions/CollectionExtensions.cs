@@ -10,6 +10,8 @@ namespace Pyther.Core.Extensions
     {
         #region IEnumerable<T>
 
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable) => !enumerable.Any();
+
         public static IEnumerable<T> Prepend<T>(this IEnumerable<T> enumerable, T value)
         {
             yield return value;
@@ -111,6 +113,8 @@ namespace Pyther.Core.Extensions
             }
         }
 
+        public static bool IsEmpty<T>(this ICollection<T> collection) => !collection.Any();
+
         #endregion
 
         #region IList<T>
@@ -132,6 +136,8 @@ namespace Pyther.Core.Extensions
             }
             return false;
         }
+
+        public static bool IsEmpty<T>(this IList<T> source) => !source.Any();
 
         #endregion
 
