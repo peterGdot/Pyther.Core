@@ -30,6 +30,9 @@ namespace Pyther.Core
         /// <param name="mask">Syntax of the route to test (like "orders/{id}/clone").</param>
         /// <param name="route">Concrete route to test (like "orders/123/clone").</param>
         /// <returns>Reeturns true, if the route matches, false otherwise.</returns>
+        /// 
+        /// mask = "connections/9189740b-4b96-46ca-9640-61abd898631c"
+        /// route = "connections/{key}/cache"
         public bool Is(string mask, string route)
         {
             parameters.Clear();
@@ -61,6 +64,7 @@ namespace Pyther.Core
 
                     // advance route until nextChar or '/'
                     int rEnd1 = nextChar != null ? route.IndexOf(nextChar.Value, rIdx) : route.Length;
+                    if (rEnd1 == -1) rEnd1 = route.Length;
                     int rEnd2 = route.IndexOf('/', rIdx);
                     if (rEnd2 == -1) rEnd2 = route.Length;
                     int rEnd = Math.Min(rEnd1, rEnd2);
