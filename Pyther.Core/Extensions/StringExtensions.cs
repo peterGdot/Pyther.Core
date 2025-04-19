@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Globalization;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
@@ -340,7 +341,7 @@ public static class StringExtensions
     /// <param name="assembly">The assembly the class is defined (null means current assembly).</param>
     /// <param name="args">Optional class constructor arguments</param>
     /// <returns>The instance of T on success, null otherwise.</returns>
-    public static T? ToInstance<T>(this string className, System.Reflection.Assembly? assembly = null, object?[]? args = null) where T: class
+    public static T? ToInstance<T>(this string className, System.Reflection.Assembly? assembly = null, object?[]? args = null) where T : class
     {
         Type? type = assembly != null ? assembly.GetType(className) : Type.GetType(className);
         if (type != null)
@@ -357,7 +358,7 @@ public static class StringExtensions
     /// <param name="className">The full qualified class name.</param>
     /// <param name="args">Optional class constructor arguments</param>
     /// <returns>The instance of T on success, null otherwise.</returns>
-    public static T? ToInstanceUnknownAssembly<T>(this string className, object?[]? args = null) where T: class
+    public static T? ToInstanceUnknownAssembly<T>(this string className, object?[]? args = null) where T : class
     {
         Type? type = Type.GetType(className);
         if (type != null)
