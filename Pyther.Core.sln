@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{6D053D1E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "extensions", "Demos\extensions\extensions.csproj", "{3BEE4EAD-B06F-E3E6-AE32-54BC0D3C574F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".private", ".private", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", ".private\Sandbox\Sandbox.csproj", "{EE25B8B9-EAF1-4BFF-BE9E-575371BC9BE6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,12 +38,17 @@ Global
 		{3BEE4EAD-B06F-E3E6-AE32-54BC0D3C574F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BEE4EAD-B06F-E3E6-AE32-54BC0D3C574F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BEE4EAD-B06F-E3E6-AE32-54BC0D3C574F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE25B8B9-EAF1-4BFF-BE9E-575371BC9BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE25B8B9-EAF1-4BFF-BE9E-575371BC9BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE25B8B9-EAF1-4BFF-BE9E-575371BC9BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE25B8B9-EAF1-4BFF-BE9E-575371BC9BE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3BEE4EAD-B06F-E3E6-AE32-54BC0D3C574F} = {6D053D1E-D89F-491C-8B39-E892B2A90A48}
+		{EE25B8B9-EAF1-4BFF-BE9E-575371BC9BE6} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D15C53F5-B1D5-4940-AEA7-51290CAA2A2F}

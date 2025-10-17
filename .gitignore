@@ -366,4 +366,4 @@ FodyWeavers.xsd
 /demos/LogTest/LogTest.csproj
 /demos/LogTest/LogTest.csproj
 /demos/LogTest/Program.cs
-/demos/Sandbox/Sandbox.csproj
+.private/
