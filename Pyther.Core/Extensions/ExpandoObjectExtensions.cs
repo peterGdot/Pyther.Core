@@ -23,7 +23,7 @@ public static class ExpandoObjectExtensions
 
     public static int CountProperty(this ExpandoObject obj)
     {
-        return obj != null ? obj.Count() : 0;
+        return obj != null ? ((IDictionary<string, object>)obj!).Count : 0;
     }
 
 }
