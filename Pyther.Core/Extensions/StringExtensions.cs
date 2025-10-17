@@ -340,7 +340,7 @@ public static class StringExtensions
     /// <param name="assembly">The assembly the class is defined (null means current assembly).</param>
     /// <param name="args">Optional class constructor arguments</param>
     /// <returns>The instance of T on success, null otherwise.</returns>
-    public static T? ToInstance<T>(this string className, System.Reflection.Assembly? assembly = null, object?[]? args = null) where T: class
+    public static T? ToInstance<T>(this string className, System.Reflection.Assembly? assembly = null, object?[]? args = null) where T : class
     {
         Type? type = assembly != null ? assembly.GetType(className) : Type.GetType(className);
         if (type != null)
@@ -357,7 +357,7 @@ public static class StringExtensions
     /// <param name="className">The full qualified class name.</param>
     /// <param name="args">Optional class constructor arguments</param>
     /// <returns>The instance of T on success, null otherwise.</returns>
-    public static T? ToInstanceUnknownAssembly<T>(this string className, object?[]? args = null) where T: class
+    public static T? ToInstanceUnknownAssembly<T>(this string className, object?[]? args = null) where T : class
     {
         Type? type = Type.GetType(className);
         if (type != null)
@@ -425,7 +425,7 @@ public static class StringExtensions
     /// Return a substring after the first occurence of a given search character.
     /// If the search character is not an element of the source string, the source string itself is returned.
     /// </summary>
-    /// <param name="text">The text to test against.</param>
+    /// <param name="text">The string to test against.</param>
     /// <param name="stop">The character to search for.</param>
     /// <param name="comparison">An optional string comparison rule.</param>
     /// <returns>Returns the string after the first occurence of the search character (not included).</returns>
@@ -436,6 +436,18 @@ public static class StringExtensions
 
         return index > 0 ? text.Substring(index + 1) : text;
     }
+
+    /// <summary>
+    /// Truncate a string to maximum length.
+    /// </summary>
+    /// <param name="text">The string to handle.</param>
+    /// <param name="maxLength">Maximum string length after the cutting apears.</param>
+    /// <returns>Returns the truncated string.</returns>
+    public static string? Truncate(this string? text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        return text.Length <= maxLength ? text : text[..maxLength];
+    } 
 
     /// <summary>
     /// A simple SQL Like operator.
